@@ -19,7 +19,18 @@ def min_boats(weights, limit):
     Список weights не меняется. Время O(n log n).
     Пример: min_boats([3, 5, 3, 4], 5) == 4.
     """
-    raise NotImplementedError
+    sorted_weights = sorted(weights)
+    left = 0
+    right = len(sorted_weights) - 1
+    boats = 0
+
+    while left <= right:
+        if sorted_weights[left] + sorted_weights[right] <= limit:
+            left += 1
+        right -= 1
+        boats += 1
+
+    return boats
 
 
 def even_first(nums):
@@ -29,6 +40,11 @@ def even_first(nums):
     стояли раньше всех нечётных. Порядок внутри групп любой.
     Функция ничего не возвращает: меняется сам переданный список.
     Новые списки не создаются, дополнительная память O(1).
-    Пример: [3, 1, 2, 4] → например, [2, 4, 3, 1] или [4, 2, 1, 3].
+    Пример: [3, 1, 2, 4] → например, [2, 4, 3, 1] или.
     """
-    raise NotImplementedError
+    write = 0
+
+    for read in range(len(nums)):
+        if nums[read] % 2 == 0:
+            nums[write], nums[read] = nums[read], nums[write]
+            write += 1
