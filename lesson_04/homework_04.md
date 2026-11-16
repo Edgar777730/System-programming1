@@ -27,7 +27,8 @@
 
 Команда `pytest lesson_04 -q` показала: `22 passed`.
 
-![Код и 22 passed в терминале](screens/01-tests.png)
+фото в файлике
+
 
 ---
 
