@@ -7,8 +7,6 @@
 Программа печатает таблицу и сохраняет замеры в два файла рядом с собой:
 results_08.csv (время от n) и results_08_k.csv (время от k при постоянном n).
 Графики по этим файлам строит plot_08.py.
-
-Напишите тела четырёх функций с пометкой TODO. Остальное уже готово.
 """
 
 import csv
@@ -32,15 +30,9 @@ K_SERIES = [1, 1_000, 2_500, 5_000, 7_500, 9_000, 10_000]
 
 
 def make_numbers(n, seed=8):
-    """Вернуть список из n разных целых чисел в случайном порядке.
-
-    Числа берутся из диапазона от 0 до 10·n. При одном и том же seed
-    список всегда одинаковый, поэтому замер можно повторить.
-
-    Подсказка: random.Random(seed) — свой генератор, у него есть метод sample.
-    """
-    # TODO
-    raise NotImplementedError
+    """Вернуть список из n разных целых чисел в случайном порядке."""
+    rng = random.Random(seed)
+    return rng.sample(range(10 * n), n)
 
 
 def make_intervals(n, seed=8):
@@ -54,38 +46,33 @@ def make_intervals(n, seed=8):
 
 
 def measure_time(func, *args, repeats=5):
-    """Вызвать func(*args) repeats раз и вернуть медиану времени в секундах.
-
-    Так же, как в программе measurements.py с занятия 4: perf_counter до
-    и после вызова, время каждого вызова в список, в ответ — медиана.
-    """
-    # TODO
-    raise NotImplementedError
+    """Вызвать func(*args) repeats раз и вернуть медиану времени в секундах."""
+    times = []
+    for _ in range(repeats):
+        start = perf_counter()
+        func(*args)
+        times.append(perf_counter() - start)
+    return median(times)
 
 
 def growth_ratios(times):
-    """Во сколько раз выросло время при каждом удвоении n.
-
-    growth_ratios([1.0, 2.0, 8.0]) == [2.0, 4.0]
-    Для пустого списка и списка из одного времени ответ — пустой список.
-    """
-    # TODO
-    raise NotImplementedError
+    """Во сколько раз выросло время при каждом удвоении n."""
+    ratios = []
+    for i in range(1, len(times)):
+        ratios.append(times[i] / times[i - 1])
+    return ratios
 
 
 def measure_k_series(n, ks, repeats=3):
-    """Время window_sum_slices на одних и тех же n числах при разных k.
+    """Время window_sum_slices на одних и тех же n числах при разных k."""
+    nums = make_numbers(n)
+    results = []
+    for k in ks:
+        seconds = measure_time(window_sum_slices, nums, k, repeats=repeats)
+        results.append((k, seconds))
+    return results
 
-    Вернуть список пар (k, секунды) в том же порядке, что ks.
-    Данные готовятся один раз, до замеров: make_numbers(n).
-    """
-    # TODO
-    raise NotImplementedError
 
-
-# Что измеряем: имя в таблице, функция, как построить вход размера n,
-# сколько раз повторить замер. Быстрые функции повторяем чаще: их время —
-# доли миллисекунды, и одиночный замер сильно скачет.
 EXPERIMENTS = [
     ("window_sum_slices", window_sum_slices, lambda n: (make_numbers(n), n // 2), 3),
     ("window_sum_shift", window_sum_shift, lambda n: (make_numbers(n), n // 2), 15),
